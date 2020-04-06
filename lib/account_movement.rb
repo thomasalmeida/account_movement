@@ -1,3 +1,4 @@
+require 'account_movement/account'
 
 module AccountMovement
   class CLI

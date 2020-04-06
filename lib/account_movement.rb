@@ -4,6 +4,11 @@ module AccountMovement
     def start(args)
       validates_args(args)
 
+    rescue StandardError => e
+      puts e.message
+      e.message
+    end
+
     private
 
     def validates_args(args)

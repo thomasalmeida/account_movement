@@ -1,0 +1,4 @@
+require "account_movement"
+
+cli = AccountMovement::CLI.new
+cli.start(ARGV)

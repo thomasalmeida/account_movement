@@ -29,6 +29,8 @@ module AccountMovement
     end
 
     def create_transactions(transactions_data, accounts)
+      transactions_data = clean_data(transactions_data)
+
       transactions_data.each do |transaction|
         account = accounts.select { |account| account.id == transaction[0] }
         raise StandardError.new 'Account not found in TRANSACTION file' if account.count < 1
@@ -48,6 +50,17 @@ module AccountMovement
 
       file_data
     end
+
+    def clean_data(data)
+      data.map { |d| d.split(',').map {|dd| is_data_integer?(dd)} }
+    end
+
+    def is_data_integer?(data)
+      raise StandardError.new 'Non-integer type data in files' unless /\A[-+]?\d+\z/ === data.delete(' ')
+
+      data.to_i
+    end
+
     def validates_args(args)
       raise StandardError.new 'Wrong number of parameters' unless args.size == 2
     end

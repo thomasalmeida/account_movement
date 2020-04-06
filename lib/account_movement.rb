@@ -6,6 +6,7 @@ module AccountMovement
       validates_args(args)
 
       accounts = create_accounts(read_file(args[0]))
+      accounts = create_transactions(read_file(args[1]), accounts)
     rescue StandardError => e
       puts e.message
       e.message
@@ -27,6 +28,18 @@ module AccountMovement
       accounts
     end
 
+    def create_transactions(transactions_data, accounts)
+      transactions_data.each do |transaction|
+        account = accounts.select { |account| account.id == transaction[0] }
+        raise StandardError.new 'Account not found in TRANSACTION file' if account.count < 1
+
+        account = account.pop
+        account.balance += transaction[1]
+        account.balance -= 3 if account.balance.negative? && transaction[1].negative?
+      end
+
+      accounts
+    end
 
     def read_file(file_path)
       file = File.open(file_path)
@@ -38,4 +51,5 @@ module AccountMovement
     def validates_args(args)
       raise StandardError.new 'Wrong number of parameters' unless args.size == 2
     end
+  end
 end

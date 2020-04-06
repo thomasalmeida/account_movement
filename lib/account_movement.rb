@@ -7,6 +7,7 @@ module AccountMovement
 
       accounts = create_accounts(read_file(args[0]))
       accounts = create_transactions(read_file(args[1]), accounts)
+      generate_report(accounts)
     rescue StandardError => e
       puts e.message
       e.message
@@ -41,6 +42,10 @@ module AccountMovement
       end
 
       accounts
+    end
+
+    def generate_report(accounts)
+      accounts.sort_by(&:id).each { |account| puts "#{account.id},#{account.balance}" }
     end
 
     def read_file(file_path)

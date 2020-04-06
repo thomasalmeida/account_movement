@@ -5,12 +5,27 @@ module AccountMovement
     def start(args)
       validates_args(args)
 
+      accounts = create_accounts(read_file(args[0]))
     rescue StandardError => e
       puts e.message
       e.message
     end
 
     private
+
+    def create_accounts(data)
+      data = clean_data(data)
+
+      accounts = []
+
+      data.each do |account_data|
+        raise StandardError.new 'Duplicate accounts in ACCOUNT file' if accounts.select { |account| account.id == account_data[0] }.count > 0
+
+        accounts << Account.new(id: account_data[0], balance: account_data[1])
+      end
+
+      accounts
+    end
 
 
     def read_file(file_path)
